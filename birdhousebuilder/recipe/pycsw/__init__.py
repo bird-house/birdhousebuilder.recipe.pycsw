@@ -18,6 +18,7 @@ class Recipe(object):
     """This recipe is used by zc.buildout.
     It installs a pycsw catalog service instance."""
 
+    def __init__(self, buildout, name, options):
         self.buildout, self.name, self.options = buildout, name, options
         b_options = buildout['buildout']
         
@@ -29,8 +30,8 @@ class Recipe(object):
         self.hostname = options.get('hostname', 'localhost')
         self.options['hostname'] = self.hostname
 
-        self.options['proxyEnabled'] = options.get('proxyEnabled', 'false')
-        self.port = options.get('port', '8091')
+        self.options['proxy-enabled'] = options.get('proxy-enabled', 'false')
+        self.port = options.get('port', '8082')
         self.options['port'] = self.port
 
         self.options['loglevel'] = options.get('loglevel', 'DEBUG')
