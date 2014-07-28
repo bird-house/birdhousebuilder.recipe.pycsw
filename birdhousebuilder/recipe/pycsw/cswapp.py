@@ -62,7 +62,7 @@ sys.path.append(app_path)
 from pycsw import server
 
 
-def application(env, start_response):
+def app(env, start_response):
     """WSGI wrapper"""
     config = 'default.cfg'
 
@@ -122,11 +122,11 @@ def application(env, start_response):
 
     return [contents]
 
-if __name__ == '__main__':  # run inline using WSGI reference implementation
-    from wsgiref.simple_server import make_server
-    port = 8000
-    if len(sys.argv) > 1:
-        port = int(sys.argv[1])
-    httpd = make_server('', port, application)
-    print "Serving on port %d..." % port
-    httpd.serve_forever()
+## if __name__ == '__main__':  # run inline using WSGI reference implementation
+##     from wsgiref.simple_server import make_server
+##     port = 8000
+##     if len(sys.argv) > 1:
+##         port = int(sys.argv[1])
+##     httpd = make_server('', port, application)
+##     print "Serving on port %d..." % port
+##     httpd.serve_forever()
