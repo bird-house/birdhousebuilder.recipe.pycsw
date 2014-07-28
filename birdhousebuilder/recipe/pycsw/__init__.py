@@ -12,7 +12,7 @@ templ_pycsw = Template(filename=os.path.join(os.path.dirname(__file__), "pycsw.c
 templ_app = Template(filename=os.path.join(os.path.dirname(__file__), "cswapp.py"))
 templ_gunicorn = Template(filename=os.path.join(os.path.dirname(__file__), "gunicorn.conf.py"))
 templ_cmd = Template(
-    "${bin_dir}/python ${prefix}/bin/gunicorn cswapp:app -c ${prefix}/etc/pycsw/gunicorn.${sites}.py")
+    "${prefix}/bin/python ${prefix}/bin/gunicorn cswapp:app -c ${prefix}/etc/pycsw/gunicorn.${sites}.py")
 
 class Recipe(object):
     """This recipe is used by zc.buildout.
@@ -43,6 +43,7 @@ class Recipe(object):
         installed += list(self.install_pycsw())
         installed += list(self.install_config())
         installed += list(self.install_app())
+        installed += list(self.setup_db())
         installed += list(self.install_gunicorn())
         installed += list(self.install_supervisor())
         installed += list(self.install_nginx())
@@ -57,7 +58,7 @@ class Recipe(object):
         mypath = os.path.join(self.prefix, 'var', 'lib', 'pycsw')
         conda.makedirs(mypath)
         
-        mypath = os.path.join(self.prefix, 'var', 'log')
+        mypath = os.path.join(self.prefix, 'var', 'log', 'pycsw')
         conda.makedirs(mypath)
 
         return script.install()
@@ -67,7 +68,7 @@ class Recipe(object):
         install pycsw config in etc/pycsw
         """
         result = templ_pycsw.render(**self.options)
-        output = os.path.join(self.prefix, 'etc', 'pycsw', self.sites + '.cfg')
+        output = os.path.join(self.prefix, 'etc', 'pycsw', self.sites+'.cfg')
         conda.makedirs(os.path.dirname(output))
                 
         try:
@@ -83,11 +84,7 @@ class Recipe(object):
         """
         install gunicorn conf in etc/pycsw
         """
-        result = templ_gunicorn.render(
-            prefix=self.prefix,
-            sites=self.sites,
-            bin_dir=self.bin_dir,
-            )
+        result = templ_gunicorn.render(**self.options)
         output = os.path.join(self.prefix, 'etc', 'pycsw', 'gunicorn.'+self.sites+'.py')
         conda.makedirs(os.path.dirname(output))
                 
@@ -119,12 +116,30 @@ class Recipe(object):
             fp.write(result)
         return [output]
 
+    def setup_db(self):
+        """
+        setups initial database as configured in default.cfg
+        """
+        
+        output = os.path.join(self.prefix, 'var', 'lib', 'pycsw', self.sites, 'data', 'records.db')
+        if os.path.exists(output):
+            return []
+        
+        conda.makedirs(os.path.dirname(output))
+        
+        from subprocess import check_call
+        cmd = [os.path.join(self.prefix, 'bin/pycsw-admin.py')]
+        cmd.extend(["-c", "setup_db"])
+        cmd.extend(["-f", os.path.join(self.prefix, "etc", "pycsw", "default.cfg")])
+        check_call(cmd)
+        return []
+        
     def install_supervisor(self):
         script = supervisor.Recipe(
             self.buildout,
             self.sites,
-            {'program': self.sites,
-             'command': templ_cmd.render(prefix=self.prefix, bin_dir=self.bin_dir, sites=self.sites),
+            {'program': 'pycsw-'+self.sites,
+             'command': templ_cmd.render(**self.options),
              'directory': os.path.join(self.prefix, 'etc', 'pycsw')
              })
         return script.install()
