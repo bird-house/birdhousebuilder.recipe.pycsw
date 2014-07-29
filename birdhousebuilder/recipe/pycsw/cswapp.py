@@ -64,7 +64,7 @@ from pycsw import server
 
 def app(env, start_response):
     """WSGI wrapper"""
-    config = 'default.cfg'
+    config = 'pycsw.cfg'
 
     if 'PYCSW_CONFIG' in env:
         config = env['PYCSW_CONFIG']

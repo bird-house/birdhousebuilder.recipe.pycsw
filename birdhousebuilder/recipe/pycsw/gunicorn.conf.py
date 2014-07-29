@@ -1,5 +1,7 @@
+import multiprocessing
+
 bind = 'unix://${prefix}/var/run/${sites}.socket'
-workers = 3
+workers = multiprocessing.cpu_count() * 2 + 1
 
 # environment
 raw_env = ["HOME=${prefix}/var/lib/pycsw", 
