@@ -1,4 +1,4 @@
-bind = 'unix://${prefix}/var/run/pycsw_${sites}.socket'
+bind = 'unix://${prefix}/var/run/${sites}.socket'
 workers = 3
 
 # environment

@@ -130,7 +130,7 @@ class Recipe(object):
         from subprocess import check_call
         cmd = [os.path.join(self.prefix, 'bin/pycsw-admin.py')]
         cmd.extend(["-c", "setup_db"])
-        cmd.extend(["-f", os.path.join(self.prefix, "etc", "pycsw", "default.cfg")])
+        cmd.extend(["-f", os.path.join(self.prefix, "etc", "pycsw", self.sites+".cfg")])
         check_call(cmd)
         return []
         
