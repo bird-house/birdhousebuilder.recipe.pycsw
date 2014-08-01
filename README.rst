@@ -7,7 +7,7 @@ birdhousebuilder.recipe.pycsw
 Introduction
 ************
 
-``birdhousebuilder.recipe.pycsw`` is a `Buildout`_ recipe to install and configure `pycsw`_ with `Anaconda`_. `pycsw`_ is a Python implementation of a `Catalog Service for the Web`_ (CSW). ``pycsw`` will be deployed as an `Supervisor`_ service and is available on an `Nginx`_ web server. 
+``birdhousebuilder.recipe.pycsw`` is a `Buildout`_ recipe to install and configure `pycsw`_ with `Anaconda`_. `pycsw`_ is a Python implementation of a `Catalog Service for the Web`_ (CSW). ``pycsw`` will be deployed as a `Supervisor`_ service and is available on a `Nginx`_ web server. 
 
 Birdhousebuilder recipes are used to build Web Processing Service components (Phoenix, Malleefowl, Nighthawk, FlyingPigeon, ...) of the ClimDaPs project. All Birdhousebuilder recipes need an existing `Anaconda`_ installation.  
 
