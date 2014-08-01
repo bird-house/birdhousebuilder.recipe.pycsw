@@ -5,8 +5,8 @@ This module contains the tool of birdhousebuilder.recipe.pycsw
 from setuptools import find_packages
 from setuptools import setup
 
-version = '0.1.0'
-description = 'A Buildout recipe to install and configure pycsw'
+version = '0.1.1'
+description = 'A Buildout recipe to install and configure pycsw Catalog Service (CSW) with Anaconda.'
 long_description = (
     open('README.rst').read() + '\n' +
     open('AUTHORS.rst').read() + '\n' +
