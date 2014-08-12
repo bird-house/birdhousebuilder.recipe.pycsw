@@ -12,7 +12,7 @@ templ_pycsw = Template(filename=os.path.join(os.path.dirname(__file__), "pycsw.c
 templ_app = Template(filename=os.path.join(os.path.dirname(__file__), "cswapp.py"))
 templ_gunicorn = Template(filename=os.path.join(os.path.dirname(__file__), "gunicorn.conf.py"))
 templ_cmd = Template(
-    "${prefix}/bin/gunicorn -b unix://${prefix}/var/run/${sites}.socket -w 3 -e PYCSW_CONFIG=${prefix}/etc/pycsw/${sites}.cfg cswapp:app")
+    "${prefix}/bin/gunicorn -c ${prefix}/etc/pycsw/gunicorn.${sites}.py cswapp:app")
 
 class Recipe(object):
     """This recipe is used by zc.buildout.
