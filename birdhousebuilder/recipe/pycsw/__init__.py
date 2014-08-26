@@ -152,6 +152,9 @@ class Recipe(object):
              'sites': self.sites,
              'prefix': self.prefix,
              'port': self.port,
+             'user': self.options.get('user'),
+             'group': self.options.get('group'),
+             'proxy-enabled': self.options['proxy-enabled'],
              })
         return script.install()
         
