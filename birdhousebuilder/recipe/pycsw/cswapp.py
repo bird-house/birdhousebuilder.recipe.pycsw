@@ -68,6 +68,10 @@ def app(env, start_response):
 
     if 'PYCSW_CONFIG' in env:
         config = env['PYCSW_CONFIG']
+    elif 'PYCSW_CONFIG' in os.environ:
+        config = os.environ.get('PYCSW_CONFIG')
+    else:
+        return "Set PYCSW_CONFIG env variable to start server"
 
     if env['QUERY_STRING'].lower().find('config') != -1:
         for kvp in env['QUERY_STRING'].split('&'):
