@@ -1,6 +1,12 @@
 Change History
 **************
 
+0.2.1 (2015-05-11)
+==================
+
+* merged https://github.com/bird-house/birdhousebuilder.recipe.pycsw/pull/1
+add check for PYCSW_CONFIG variable in os.environ
+
 0.2.0 (2015-02-24)
 ==================
 
