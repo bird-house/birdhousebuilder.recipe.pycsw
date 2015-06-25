@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# Copyright (C)2015 DKRZ GmbH
 
 """Buildout Recipe pycsw"""
 
@@ -30,8 +29,8 @@ class Recipe(object):
         self.options['prefix'] = self.prefix
         self.hostname = options.get('hostname', 'localhost')
         self.options['hostname'] = self.hostname
+        self.options['user'] = options.get('user', '')
 
-        self.options['proxy-enabled'] = options.get('proxy-enabled', 'false')
         self.port = options.get('port', '8082')
         self.options['port'] = self.port
 
@@ -139,7 +138,8 @@ class Recipe(object):
         script = supervisor.Recipe(
             self.buildout,
             self.sites,
-            {'program': self.sites,
+            {'user': self.options.get('user'),
+             'program': self.sites,
              'command': templ_cmd.render(**self.options),
              'directory': os.path.join(self.prefix, 'etc', 'pycsw')
              })
@@ -150,11 +150,11 @@ class Recipe(object):
             self.buildout,
             self.name,
             {'input': os.path.join(os.path.dirname(__file__), "nginx.conf"),
+             'user': self.options.get('user'),
              'sites': self.sites,
              'prefix': self.prefix,
              'port': self.port,
              'hostname': self.options.get('hostname'),
-             'master': 'false',
              })
         return script.install()
         
