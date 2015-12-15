@@ -38,22 +38,24 @@ Supported options
 
 The recipe supports the following options:
 
-``anaconda-home``
+**anaconda-home**
    Buildout option with the root folder of the Anaconda installation. Default: ``$HOME/anaconda``.
-   The default location can also be set with the environment variable ``ANACONDA_HOME``. Example::
+   The default location can also be set with the environment variable ``ANACONDA_HOME``. Example:
+
+.. code-block:: sh
 
      export ANACONDA_HOME=/opt/anaconda
 
-   Search priority is:
+ Search priority is:
 
-   1. ``anaconda-home`` in ``buildout.cfg``
-   2. ``$ANACONDA_HOME``
-   3. ``$HOME/anaconda``
+ 1. ``anaconda-home`` in ``buildout.cfg``
+ 2. ``$ANACONDA_HOME``
+ 3. ``$HOME/anaconda``
 
-``hostname``
+**hostname**
    The hostname of the pycsw service (nginx). Default: ``localhost``
 
-``port``
+**port**
    The port of the pycsw service (nginx). Default: ``8082``   
 
 
@@ -61,6 +63,8 @@ Example usage
 =============
 
 The following example ``buildout.cfg`` installs ``pycsw`` with Anaconda::
+
+.. code-block:: ini
 
   [buildout]
   parts = pycsw
@@ -80,7 +84,9 @@ After installing with Buildout start the ``pycsw`` service with::
   $ bin/supervisorctl status      # check that pycsw is running
   $ less var/log/pycsw/pycsw.log  # check log file
 
-Open your browser with the following URL:: 
+Open your browser with the following URL:
+
+.. code-block:: sh 
 
   http://localhost:8082/csw?service=CSW&version=2.0.2&request=GetCapabilities
 
