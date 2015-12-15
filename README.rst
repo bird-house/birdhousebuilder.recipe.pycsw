@@ -90,7 +90,3 @@ Open your browser with the following URL:
 
   http://localhost:8082/csw?service=CSW&version=2.0.2&request=GetCapabilities
 
-
-
-
-
