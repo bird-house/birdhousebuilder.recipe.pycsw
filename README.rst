@@ -62,8 +62,10 @@ The recipe supports the following options:
    Allow transactions. Default: ``true``
 
 **allowed_ips**
-   The IPs allowed to access this pycsw service. Default: ``127.0.0.1``
+   The IP addresses allowed to perform transactions. Default: ``127.0.0.1``
 
+
+See the `PyCSW documentation <http://docs.pycsw.org/en/latest/configuration.html>`_ for configuration details.
 
 Example usage
 =============
