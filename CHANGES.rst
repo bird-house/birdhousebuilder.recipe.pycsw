@@ -1,6 +1,13 @@
 Change History
 **************
 
+0.3.0 (2015-12-18)
+==================
+
+* added options ``allowed_ips`` and ``transactions``.
+* updated Readme.
+* cleaned up buildout update mode.
+
 0.2.3 (2015-12-15)
 ==================
 

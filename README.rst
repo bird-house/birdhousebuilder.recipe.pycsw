@@ -27,7 +27,7 @@ The recipe requires that Anaconda is already installed. It assumes that the defa
 
 It installs the ``pycsw`` package from a conda channel in a conda environment named ``birdhouse``. The location of the birdhouse environment is ``.conda/envs/birdhouse``. It setups a `pycsw`_ database (``sqlite``) in ``~/.conda/envs/birdhouse/var/lib/pycsw``. It deploys a `Supervisor`_ configuration for ``pycsw`` in ``~/.conda/envs/birdhouse/etc/supervisor/conf.d/pycsw.conf``. Supervisor can be started with ``~/.conda/envs/birdhouse/etc/init.d/supervisor start``.
 
-The recipe will install the ``nginx`` package from a conda channel and deploy a Nginx site configuration for ``pycsw``. The configuration will be deployed in ``~/.conda/envs/birdhouse/etc/nginx/conf.d/pycsw.conf``. Nginx can be started with ``~/.conda/envs/birdhouse/etc/init.d/nginx start``.
+The recipe will install the ``nginx`` package from a conda channel and deploy a Nginx site configuration for ``pycsw``. The configuration will be deployed in ``~/.conda/envs/birdhouse/etc/nginx/conf.d/pycsw.conf``.
 
 By default ``pycsw`` will be available on http://localhost:8082/csw?service=CSW&version=2.0.2&request=GetCapabilities.
 
@@ -58,6 +58,12 @@ The recipe supports the following options:
 **port**
    The port of the pycsw service (nginx). Default: ``8082``   
 
+**transactions**
+   Allow transactions. Default: ``true``
+
+**allowed_ips**
+   The IPs allowed to access this pycsw service. Default: ``127.0.0.1``
+
 
 Example usage
 =============
@@ -79,10 +85,9 @@ The following example ``buildout.cfg`` installs ``pycsw`` with Anaconda::
 After installing with Buildout start the ``pycsw`` service with::
 
   $ cd /home/myself/.conda/envs/birdhouse
-  $ etc/init.d/supervisord start  # start|stop|restart
-  $ etc/init.d/nginx start        # start|stop|restart
-  $ bin/supervisorctl status      # check that pycsw is running
-  $ less var/log/pycsw/pycsw.log  # check log file
+  $ etc/init.d/supervisord start       # start|stop|restart
+  $ bin/supervisorctl status           # check that pycsw is running
+  $ less var/log/supervisor/pycsw.log  # check log file
 
 Open your browser with the following URL:
 

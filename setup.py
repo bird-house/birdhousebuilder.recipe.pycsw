@@ -5,7 +5,7 @@ This module contains the tool of birdhousebuilder.recipe.pycsw
 from setuptools import find_packages
 from setuptools import setup
 
-version = '0.2.3'
+version = '0.3.0'
 description = 'A Buildout recipe to install and configure pycsw Catalog Service (CSW) with Anaconda.'
 long_description = (
     open('README.rst').read() + '\n' +
@@ -47,10 +47,10 @@ setup(name='birdhousebuilder.recipe.pycsw',
       install_requires=['setuptools',
                         'zc.buildout',
                         # -*- Extra requirements: -*-
-            		'Mako',
-            		'birdhousebuilder.recipe.conda',
-            		'birdhousebuilder.recipe.supervisor',
-            		'birdhousebuilder.recipe.nginx',
+                    'Mako',
+                    'birdhousebuilder.recipe.conda',
+                    'birdhousebuilder.recipe.supervisor',
+                    'birdhousebuilder.recipe.nginx',
                         ],
       tests_require=tests_require,
       extras_require=dict(tests=tests_require),
