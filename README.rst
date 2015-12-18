@@ -68,7 +68,7 @@ The recipe supports the following options:
 Example usage
 =============
 
-The following example ``buildout.cfg`` installs ``pycsw`` with Anaconda::
+The following example ``buildout.cfg`` installs ``pycsw`` with Anaconda:
 
 .. code-block:: ini
 
@@ -82,7 +82,9 @@ The following example ``buildout.cfg`` installs ``pycsw`` with Anaconda::
   hostname = localhost
   port = 8082
 
-After installing with Buildout start the ``pycsw`` service with::
+After installing with Buildout start the ``pycsw`` service with:
+
+.. code-block:: sh
 
   $ cd /home/myself/.conda/envs/birdhouse
   $ etc/init.d/supervisord start       # start|stop|restart
