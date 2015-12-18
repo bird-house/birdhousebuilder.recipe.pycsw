@@ -21,7 +21,7 @@ class Recipe(object):
         self.buildout, self.name, self.options = buildout, name, options
         b_options = buildout['buildout']
 
-        self.prefix = self.options.get('prefix', conda.prefix())
+        self.prefix = options.get('prefix', conda.prefix())
         self.options['prefix'] = self.prefix
         
         self.sites = options.get('sites', self.name)
@@ -34,22 +34,25 @@ class Recipe(object):
         self.port = options.get('port', '8082')
         self.options['port'] = self.port
 
+        self.options['transactions'] = options.get('transactions', 'true')
+        self.options['allowed_ips'] = options.get('allowed_ips', '127.0.0.1')
+
         self.options['loglevel'] = options.get('loglevel', 'DEBUG')
 
         self.bin_dir = b_options.get('bin-directory')
 
-    def install(self):
+    def install(self, update=False):
         installed = []
-        installed += list(self.install_pycsw())
+        installed += list(self.install_pycsw(update))
         installed += list(self.install_config())
         installed += list(self.install_app())
         installed += list(self.setup_db())
         installed += list(self.install_gunicorn())
-        installed += list(self.install_supervisor())
-        installed += list(self.install_nginx())
+        installed += list(self.install_supervisor(update))
+        installed += list(self.install_nginx(update))
         return installed
 
-    def install_pycsw(self):
+    def install_pycsw(self, update):
         script = conda.Recipe(
             self.buildout,
             self.name,
@@ -61,7 +64,10 @@ class Recipe(object):
         mypath = os.path.join(self.prefix, 'var', 'log', 'pycsw')
         conda.makedirs(mypath)
 
-        return script.install()
+        if update == True:
+            return script.update()
+        else:
+            return script.install()
         
     def install_config(self):
         """
@@ -134,7 +140,7 @@ class Recipe(object):
         check_call(cmd)
         return []
         
-    def install_supervisor(self):
+    def install_supervisor(self, update=False):
         script = supervisor.Recipe(
             self.buildout,
             self.sites,
@@ -143,9 +149,9 @@ class Recipe(object):
              'command': templ_cmd.render(**self.options),
              'directory': os.path.join(self.prefix, 'etc', 'pycsw')
              })
-        return script.install()
+        return script.install(update)
 
-    def install_nginx(self):
+    def install_nginx(self, update=False):
         script = nginx.Recipe(
             self.buildout,
             self.name,
@@ -156,10 +162,13 @@ class Recipe(object):
              'port': self.port,
              'hostname': self.options.get('hostname'),
              })
-        return script.install()
+        if update==True:
+            return script.update()
+        else:
+            return script.install()
         
     def update(self):
-        return self.install()
+        return self.install(update=True)
 
 def uninstall(name, options):
     pass
