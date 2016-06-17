@@ -133,7 +133,7 @@ class Recipe(object):
         conda.makedirs(os.path.dirname(output))
         
         from subprocess import check_call
-        cmd = [os.path.join(self.prefix, 'bin/pycsw-admin.py')]
+        cmd = [os.path.join(self.env_path, 'bin/pycsw-admin.py')]
         cmd.extend(["-c", "setup_db"])
         cmd.extend(["-f", os.path.join(self.prefix, "etc", "pycsw", self.sites+".cfg")])
         check_call(cmd)
