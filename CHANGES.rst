@@ -1,6 +1,12 @@
 Change History
 **************
 
+0.4.0 (2016-06-17)
+==================
+
+* using conda_env_path.
+* set prefix from buildout option birdhouse-home.
+
 0.3.0 (2015-12-18)
 ==================
 
