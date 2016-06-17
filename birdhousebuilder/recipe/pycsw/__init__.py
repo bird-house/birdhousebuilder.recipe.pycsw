@@ -11,7 +11,7 @@ templ_pycsw = Template(filename=os.path.join(os.path.dirname(__file__), "pycsw.c
 templ_app = Template(filename=os.path.join(os.path.dirname(__file__), "cswapp.py"))
 templ_gunicorn = Template(filename=os.path.join(os.path.dirname(__file__), "gunicorn.conf.py"))
 templ_cmd = Template(
-    "${prefix}/bin/gunicorn -c ${prefix}/etc/pycsw/gunicorn.${sites}.py cswapp:app")
+    "${env_path}/bin/gunicorn -c ${prefix}/etc/pycsw/gunicorn.${sites}.py cswapp:app")
 
 class Recipe(object):
     """This recipe is used by zc.buildout.
@@ -21,8 +21,11 @@ class Recipe(object):
         self.buildout, self.name, self.options = buildout, name, options
         b_options = buildout['buildout']
 
-        self.prefix = options.get('prefix', conda.prefix())
+        self.prefix = b_options.get('birdhouse-home', "/opt/birdhouse")
         self.options['prefix'] = self.prefix
+
+        self.env_path = conda.conda_env_path(buildout, options)
+        self.options['env_path'] = self.env_path
         
         self.sites = options.get('sites', self.name)
         self.options['sites'] = self.sites
@@ -63,11 +66,7 @@ class Recipe(object):
         
         mypath = os.path.join(self.prefix, 'var', 'log', 'pycsw')
         conda.makedirs(mypath)
-
-        if update == True:
-            return script.update()
-        else:
-            return script.install()
+        return script.install(update=update)
         
     def install_config(self):
         """
@@ -162,10 +161,7 @@ class Recipe(object):
              'port': self.port,
              'hostname': self.options.get('hostname'),
              })
-        if update==True:
-            return script.update()
-        else:
-            return script.install()
+        return script.install(update=update)
         
     def update(self):
         return self.install(update=True)
