@@ -21,8 +21,16 @@ class Recipe(object):
         self.buildout, self.name, self.options = buildout, name, options
         b_options = buildout['buildout']
 
-        self.prefix = b_options.get('birdhouse-home', "/opt/birdhouse")
-        self.options['prefix'] = self.prefix
+        deployment = self.deployment = options.get('deployment')
+        if deployment:
+            self.options['prefix'] = buildout[deployment].get('prefix')
+            self.options['etc_prefix'] = buildout[deployment].get('etc-prefix')
+            self.options['var_prefix'] = buildout[deployment].get('var-prefix')
+        else:
+            self.options['prefix'] = os.path.join(buildout['buildout']['parts-directory'], self.name)
+            self.options['etc_prefix'] = os.path.join(self.options['prefix'], 'etc')
+            self.options['var_prefix'] = os.path.join(self.options['prefix'], 'var')
+        self.prefix = self.options['prefix']
 
         self.env_path = conda.conda_env_path(buildout, options)
         self.options['env_path'] = self.env_path
@@ -59,12 +67,12 @@ class Recipe(object):
         script = conda.Recipe(
             self.buildout,
             self.name,
-            {'pkgs': 'pycsw<2 geolinks<0.2 gunicorn', 'channels': 'ioos birdhouse'})
+            {'pkgs': 'pycsw<2 geolinks<0.3 gunicorn', 'channels': 'conda-forge birdhouse'})
         
-        mypath = os.path.join(self.prefix, 'var', 'lib', 'pycsw')
+        mypath = os.path.join(self.options['var_prefix'], 'lib', 'pycsw')
         conda.makedirs(mypath)
         
-        mypath = os.path.join(self.prefix, 'var', 'log', 'pycsw')
+        mypath = os.path.join(self.options['var_prefix'], 'log', 'pycsw')
         conda.makedirs(mypath)
         return script.install(update=update)
         
@@ -73,7 +81,7 @@ class Recipe(object):
         install pycsw config in etc/pycsw
         """
         result = templ_pycsw.render(**self.options)
-        output = os.path.join(self.prefix, 'etc', 'pycsw', self.sites+'.cfg')
+        output = os.path.join(self.options['etc_prefix'], 'pycsw', self.sites+'.cfg')
         conda.makedirs(os.path.dirname(output))
                 
         try:
@@ -90,7 +98,7 @@ class Recipe(object):
         install gunicorn conf in etc/pycsw
         """
         result = templ_gunicorn.render(**self.options)
-        output = os.path.join(self.prefix, 'etc', 'pycsw', 'gunicorn.'+self.sites+'.py')
+        output = os.path.join(self.options['etc_prefix'], 'pycsw', 'gunicorn.'+self.sites+'.py')
         conda.makedirs(os.path.dirname(output))
                 
         try:
@@ -106,10 +114,8 @@ class Recipe(object):
         """
         install etc/cswapp.py
         """
-        result = templ_app.render(
-            prefix=self.prefix,
-            )
-        output = os.path.join(self.prefix, 'etc', 'pycsw', 'cswapp.py')
+        result = templ_app.render(prefix=self.prefix,)
+        output = os.path.join(self.options['etc_prefix'], 'pycsw', 'cswapp.py')
         conda.makedirs(os.path.dirname(output))
                 
         try:
@@ -126,7 +132,7 @@ class Recipe(object):
         setups initial database as configured in default.cfg
         """
         
-        output = os.path.join(self.prefix, 'var', 'lib', 'pycsw', self.sites, 'data', 'records.db')
+        output = os.path.join(self.options['var_prefix'], 'lib', 'pycsw', self.sites, 'data', 'records.db')
         if os.path.exists(output):
             return []
         
@@ -135,7 +141,7 @@ class Recipe(object):
         from subprocess import check_call
         cmd = [os.path.join(self.env_path, 'bin/pycsw-admin.py')]
         cmd.extend(["-c", "setup_db"])
-        cmd.extend(["-f", os.path.join(self.prefix, "etc", "pycsw", self.sites+".cfg")])
+        cmd.extend(["-f", os.path.join(self.options["etc_prefix"], "pycsw", self.sites+".cfg")])
         check_call(cmd)
         return []
         
@@ -146,7 +152,7 @@ class Recipe(object):
             {'user': self.options.get('user'),
              'program': self.sites,
              'command': templ_cmd.render(**self.options),
-             'directory': os.path.join(self.prefix, 'etc', 'pycsw')
+             'directory': os.path.join(self.options['etc_prefix'], 'pycsw')
              })
         return script.install(update)
 
@@ -154,7 +160,8 @@ class Recipe(object):
         script = nginx.Recipe(
             self.buildout,
             self.name,
-            {'input': os.path.join(os.path.dirname(__file__), "nginx.conf"),
+            {'deployment': self.deployment,
+             'input': os.path.join(os.path.dirname(__file__), "nginx.conf"),
              'user': self.options.get('user'),
              'sites': self.sites,
              'prefix': self.prefix,
