@@ -1,9 +1,10 @@
 Change History
 **************
 
-0.4.0 (2016-06-17)
+0.4.0 (2016-06-19)
 ==================
 
+* using zc.recipe.deployment.
 * using conda_env_path.
 * set prefix from buildout option birdhouse-home.
 
