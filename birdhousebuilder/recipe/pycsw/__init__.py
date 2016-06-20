@@ -67,7 +67,7 @@ class Recipe(object):
         script = conda.Recipe(
             self.buildout,
             self.name,
-            {'pkgs': 'pycsw<2 geolinks<0.3 gunicorn', 'channels': 'conda-forge birdhouse'})
+            {'pkgs': 'pycsw<2 geolinks<0.2 gunicorn', 'channels': 'ioos birdhouse'})
         
         mypath = os.path.join(self.options['var_prefix'], 'lib', 'pycsw')
         conda.makedirs(mypath)
